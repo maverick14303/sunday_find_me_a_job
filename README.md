@@ -2,10 +2,10 @@
 
 > **Sunday is my Friday.**
 
-SUNDAY is my personal assistant. It runs a handful of jobs for me, and this repo is one of them — the job finder. Every morning it finds AI/ML intern and fresher jobs, ranks them against your real resume, creates ATS-safe resume and cover-letter PDFs, and emails you the top 5 packets. Reply to that email with a company name and SUNDAY applies for you.
+SUNDAY is my personal assistant. She runs a few jobs for me, and this repo is one of them: the job finder. Every morning she digs through AI/ML intern and fresher openings, ranks them against my real resume, builds ATS-safe resume and cover-letter PDFs, and drops the top 5 in my inbox. Reply with a company name and she applies for me.
 
-Plain words: Vercel shows the button and does the work, cron-job.org is the alarm clock, and SUNDAY is the assistant tying it together.
-Technical words: Vercel hosts the dashboard and serverless functions. cron-job.org sends the HTTP triggers.
+The short version: Vercel puts up the dashboard and runs the work, cron-job.org is the alarm clock, and SUNDAY is what ties it together.
+Under the hood: Vercel hosts the dashboard and the serverless functions, and cron-job.org fires the HTTP triggers.
 
 ## What It Does
 

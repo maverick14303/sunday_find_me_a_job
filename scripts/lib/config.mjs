@@ -13,7 +13,7 @@ export const ENV_SPEC = {
     { name: "TO_EMAIL", why: "where daily packets are sent (falls back to the resume email)" },
     { name: "RESUME_PROFILE_JSON", why: "resume data in production (else data/resume-profile.json)" },
     { name: "SUPABASE_URL", why: "never-repeat, reply-to-apply, and run history" },
-    { name: "SUPABASE_ANON_KEY", why: "never-repeat, reply-to-apply, and run history" }
+    { name: "SUPABASE_SECRET_KEY", why: "never-repeat, reply-to-apply, and run history (server-only key)" }
   ],
   optional: [
     { name: "HUNTER_API_KEY", why: "free recruiter-email lookup at reply time" },

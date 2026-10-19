@@ -1,11 +1,17 @@
 import { companyKey } from "./util.mjs";
 
+// Server-side secret key first: once the anon policies on run_status and
+// sent_companies are dropped (audit SEC-6), the anon key can no longer read them.
+function supabaseKey() {
+  return process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_ANON_KEY;
+}
+
 function isConfigured() {
-  return Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY);
+  return Boolean(process.env.SUPABASE_URL && supabaseKey());
 }
 
 function headers() {
-  const key = process.env.SUPABASE_ANON_KEY;
+  const key = supabaseKey();
   return {
     apikey: key,
     Authorization: `Bearer ${key}`,
@@ -169,7 +175,7 @@ export async function getLastRunStatus() {
 // Quick reachability probe for /api/health - confirms the Supabase REST
 // endpoint answers with the configured key.
 export async function verifySupabase() {
-  if (!isConfigured()) return { ok: false, error: "SUPABASE_URL / SUPABASE_ANON_KEY not set" };
+  if (!isConfigured()) return { ok: false, error: "SUPABASE_URL / SUPABASE_SECRET_KEY not set" };
   try {
     const response = await supabaseFetch(
       `${process.env.SUPABASE_URL}/rest/v1/run_status?select=id&limit=1`,

@@ -13,3 +13,6 @@ graphify-out/
 data/resume-profile.json
 
 .env*
+
+# Internal, local only
+STATUS.md

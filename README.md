@@ -1,5 +1,8 @@
 # SUNDAY - Find Me A Job 
 
+> [!NOTE]
+> **Status (September 2026).** Running unattended, daily at 10:00 IST. Last change 2026-08-06.
+
 > **Sunday is my Friday.**
 
 SUNDAY is my personal assistant. She runs a few jobs for me, and this repo is one of them: the job finder. Every morning she digs through AI/ML intern and fresher openings, ranks them against my real resume, builds ATS-safe resume and cover-letter PDFs, and drops the top 5 in my inbox. Reply with a company name and she applies for me.
@@ -33,7 +36,7 @@ Set these in Vercel environment variables. There are far fewer than there used t
 
 **For never-repeat-a-company, reply-to-apply, and run history** (skipped silently if unset - the daily email still works):
 
-- `SUPABASE_URL`, `SUPABASE_ANON_KEY`.
+- `SUPABASE_URL`, `SUPABASE_SECRET_KEY` (the server-only secret key, not the publishable one).
 
 **Optional recruiter-email enrichment** (reply-to-apply only), tried in order Hunter -> Apollo -> Lusha:
 
@@ -96,7 +99,7 @@ If Gmail secrets are missing, the app writes an `email-preview.txt` instead of s
 
 Every company that gets emailed is recorded in a Supabase table (`sent_companies`, keyed by a normalized company name). On each run, before picking the top 5, the app filters out any company already in that table - so the same company is never sent twice, even across days/redeploys/cold starts.
 
-This needs `SUPABASE_URL` and `SUPABASE_ANON_KEY` set (see "Required Secrets" above). Without them, this specific feature is silently skipped and the app behaves as it did before - it does not block the rest of the run.
+This needs `SUPABASE_URL` and `SUPABASE_SECRET_KEY` set (see "Required Secrets" above). Without them, this specific feature is silently skipped and the app behaves as it did before - it does not block the rest of the run.
 
 To reset and allow a company to be sent again, delete its row from `sent_companies` in the Supabase dashboard.
 
@@ -113,7 +116,7 @@ Important caveats:
 - Recruiter emails are **not verified** - whether scraped from a posting or returned by Apollo/Lusha, an auto-sent application can go to a wrong, stale, or unrelated address. Check the confirmation reply each time to see exactly what happened and which source the address came from.
 - This only works for companies recently emailed by this app (it can't apply to arbitrary companies you type in).
 - It does **not** fill out web application forms (Workday, Greenhouse, Lever, career-site portals, etc.) - that would require a different, much less reliable kind of browser automation per company. When no recruiter email exists, you still have to submit through the link yourself.
-- Needs `SUPABASE_URL`/`SUPABASE_ANON_KEY` (to look up the company) and the Gmail App Password (its IMAP access is what reads your reply) - see "Gmail Setup" above.
+- Needs `SUPABASE_URL`/`SUPABASE_SECRET_KEY` (to look up the company) and the Gmail App Password (its IMAP access is what reads your reply) - see "Gmail Setup" above.
 
 ## Recruiter Email Enrichment
 
@@ -166,3 +169,10 @@ Notes:
 Free public sources sometimes return job-board listing pages instead of one exact company opening. When that happens, the app still reports the link, but it does not invent company-specific details. The best results come from company career pages and public job pages that expose a clear title, company, and description.
 
 Indeed in particular rate-limits scraping aggressively: firing its 3 search queries at the same time gets all 3 blocked with a 403, even with proper browser headers. The app now runs Indeed queries one at a time with a short delay between them, which fixes the self-inflicted part of this (verified - all 3 succeed when spaced out). Indeed can still block a given IP/session independently of how the app behaves; when that happens it's logged in the run's search diagnostics and the run continues using the other 8 sources (LinkedIn guest search, RemoteOK, Jobicy, Arbeitnow, and DuckDuckGo across 15 queries) without failing.
+
+## What is left
+
+- The resume PDF is deliberately not tailored per job, so what gets sent always matches the original
+  resume. That is a design decision, not a missing feature.
+- It runs on an external cron. A silent failure looks identical to a quiet job market, so failure
+  needs to be loud.
